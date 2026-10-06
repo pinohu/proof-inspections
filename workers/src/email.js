@@ -4,7 +4,7 @@
  * Provider abstraction with a fail-safe stub default:
  *
  *   EMAIL_PROVIDER   — 'stub' (default) | 'emailit' | 'resend'
- *   EMAIL_FROM       — sender, e.g. "Proof Inspections <hello@proofinspections.com>"
+ *   EMAIL_FROM       — sender, e.g. "Proof Inspections <support@inspections.lodgingconnections.com>"
  *   EMAIL_REPLY_TO   — reply-to address (optional)
  *   EMAILIT_API_KEY  — required when EMAIL_PROVIDER=emailit
  *   RESEND_API_KEY   — required when EMAIL_PROVIDER=resend
@@ -27,7 +27,7 @@ export function emailProvider(env) {
 }
 
 export function emailFrom(env) {
-  return env.EMAIL_FROM || 'Proof Inspections <hello@proofinspections.com>';
+  return env.EMAIL_FROM || 'Proof Inspections <support@inspections.lodgingconnections.com>';
 }
 
 async function recordEmail(kv, rec) {

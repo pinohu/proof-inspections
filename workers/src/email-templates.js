@@ -25,8 +25,8 @@ const shortId = (orderId) => {
 const BRAND = {
   name: 'Proof Inspections',
   url: 'https://inspections.lodgingconnections.com',
-  email: 'hello@proofinspections.com',
-  phone: '(814) 555-0199',
+  email: 'support@inspections.lodgingconnections.com',
+  phone: '(855) 442-0515',
   green: '#0d7a5f',
   dark: '#0a5f4b',
   ink: '#1a1a1a',

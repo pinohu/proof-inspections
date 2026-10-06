@@ -68,7 +68,7 @@ is touched by this branch until an explicit deploy is run.
 - Added: **Proof Guarantee** band (refund + free re-inspect if proof ever
   fails verification), **illustrative scenarios** section (clearly labeled —
   real customer stories to be added), **contact info** in footer
-  (hello@proofinspections.com, (814) 555-0199 — placeholders for the owner),
+  (support@inspections.lodgingconnections.com, (855) 442-0515 — placeholders for the owner),
   **customer portal link** in nav.
 - **Mobile nav**: hamburger menu (previously links just vanished on mobile).
 - **Reveal-on-scroll** micro-interactions (respects `prefers-reduced-motion`).
@@ -129,7 +129,7 @@ contractor email, own jobs), `admin` (`ADMIN_EMAILS` env allowlist).
 | `STRIPE_WEBHOOK_SECRET` | for payments | `whsec_...` — already set on live |
 | `ADMIN_EMAILS` | for `/admin` | Comma-separated owner emails, e.g. `owner@example.com` |
 | `EMAIL_PROVIDER` | no (default `stub`) | `stub` \| `emailit` \| `resend` |
-| `EMAIL_FROM` | no | Sender, default `Proof Inspections <hello@proofinspections.com>` |
+| `EMAIL_FROM` | no | Sender, default `Proof Inspections <support@inspections.lodgingconnections.com>` |
 | `EMAIL_REPLY_TO` | no | Reply-to address |
 | `EMAILIT_API_KEY` | if provider=emailit | Emailit API key (secret) |
 | `RESEND_API_KEY` | if provider=resend | Resend API key (secret) |
@@ -178,7 +178,7 @@ contractor account via `/admin` after deploy.
    firing in stub mode and visible in `/admin` → Emails.
 4. **First contractor** — create Luis Montes via `/admin` → Contractors
    (replaces the manual ID-code onboarding).
-5. **Contact placeholders** — `hello@proofinspections.com` / `(814) 555-0199`
+5. **Contact placeholders** — `support@inspections.lodgingconnections.com` / `(855) 442-0515`
    appear in footer + email templates; swap for real ones.
 6. **Customer stories** — the testimonials section is labeled illustrative;
    replace with real quotes as they come in.
