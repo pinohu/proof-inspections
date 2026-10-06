@@ -107,12 +107,29 @@
   <section class="view active" id="view-signin">
     <div class="card">
       <h2>Contractor sign-in</h2>
-      <p class="hint">Enter the contractor ID code you were given. It stays saved on this device.</p>
-      <label class="lbl" for="contractorId">Contractor ID</label>
-      <input type="text" id="contractorId" inputmode="text" autocomplete="off"
-             autocapitalize="characters" placeholder="e.g. LM-001" style="text-transform:uppercase">
-      <button class="btn" id="btnSignin">Show my jobs</button>
+      <p class="hint">Sign in with your contractor email. We'll send a 6-character code — no password needed.</p>
+      <div id="signin-email-step">
+        <label class="lbl" for="contractorEmail">Work email</label>
+        <input type="email" id="contractorEmail" inputmode="email" autocomplete="email" placeholder="you@example.com">
+        <button class="btn" id="btnSendCode">Send sign-in code</button>
+      </div>
+      <div id="signin-code-step" style="display:none">
+        <p class="hint" id="codeSentTo"></p>
+        <label class="lbl" for="contractorCode">6-character code</label>
+        <input type="text" id="contractorCode" inputmode="text" autocomplete="one-time-code"
+               placeholder="A3F9K2" maxlength="8" style="text-transform:uppercase;letter-spacing:0.25em;text-align:center;font-weight:700">
+        <button class="btn" id="btnVerifyCode">Sign in</button>
+        <button class="smalllink" id="btnResendCode" style="display:block;margin:0 auto">Resend code</button>
+      </div>
       <div class="err" id="signinErr" style="display:none"></div>
+      <details class="adv" style="margin-top:16px">
+        <summary>Have an ID code instead?</summary>
+        <label class="lbl" for="contractorId">Contractor ID</label>
+        <input type="text" id="contractorId" inputmode="text" autocomplete="off"
+               autocapitalize="characters" placeholder="e.g. LM-001" style="text-transform:uppercase">
+        <button class="btn secondary" id="btnSigninLegacy">Show my jobs</button>
+        <p class="hint">ID-code sign-in still works. For the full experience, ask your dispatcher to add your email as a contractor account.</p>
+      </details>
     </div>
     <details class="adv">
       <summary>Advanced: API server</summary>
@@ -194,6 +211,7 @@
 
 const $ = (id) => document.getElementById(id);
 const LS_ID = "pi_contractor_id", LS_API = "pi_api_base", LS_QUEUE = "pi_queue_v1";
+const LS_TOKEN = "pi_contractor_token", LS_EMAIL = "pi_contractor_email";
 
 const state = {
   jobs: [],
@@ -201,7 +219,84 @@ const state = {
   photos: [],          // [{blob, url, name}]
   gps: null,           // {lat,lng,acc}
   submitting: false,
+  contractorName: "",
+  pendingEmail: "",
 };
+
+/* ---------- auth ---------- */
+function authToken() {
+  try { return localStorage.getItem(LS_TOKEN) || ""; } catch (e) { return ""; }
+}
+function setAuthToken(t) {
+  try { t ? localStorage.setItem(LS_TOKEN, t) : localStorage.removeItem(LS_TOKEN); } catch (e) {}
+}
+function authHeaders() {
+  const t = authToken();
+  return t ? { "Authorization": "Bearer " + t, "Accept": "application/json" } : { "Accept": "application/json" };
+}
+function showSigninErr(msg) {
+  const el = $("signinErr");
+  if (!msg) { el.style.display = "none"; el.textContent = ""; return; }
+  el.textContent = msg; el.style.display = "block";
+}
+
+async function sendCode() {
+  const email = $("contractorEmail").value.trim().toLowerCase();
+  showSigninErr("");
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    showSigninErr("Enter your work email address."); return;
+  }
+  $("btnSendCode").disabled = true;
+  try {
+    const r = await fetch(api("/auth/request-code"), {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, role: "contractor" }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error((data.error && data.error.message) || "Could not send code");
+    state.pendingEmail = email;
+    try { localStorage.setItem(LS_EMAIL, email); } catch (e) {}
+    $("codeSentTo").textContent = "Code sent to " + email + " — expires in 15 minutes.";
+    $("signin-email-step").style.display = "none";
+    $("signin-code-step").style.display = "block";
+    $("contractorCode").focus();
+  } catch (e) {
+    showSigninErr(e.message + " (Is this email registered as a contractor? Ask your dispatcher.)");
+  } finally {
+    $("btnSendCode").disabled = false;
+  }
+}
+
+async function verifyCode() {
+  const code = $("contractorCode").value.trim().toUpperCase();
+  showSigninErr("");
+  if (code.length < 6) { showSigninErr("Enter the 6-character code from your email."); return; }
+  $("btnVerifyCode").disabled = true;
+  try {
+    const r = await fetch(api("/auth/verify-code"), {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: state.pendingEmail, code }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error((data.error && data.error.message) || "Sign-in failed");
+    setAuthToken(data.token);
+    await loadJobs();
+  } catch (e) {
+    showSigninErr(e.message);
+  } finally {
+    $("btnVerifyCode").disabled = false;
+  }
+}
+
+/* legacy ID-code sign-in (kept for backwards compatibility) */
+async function signinLegacy() {
+  const id = $("contractorId").value.trim().toUpperCase();
+  showSigninErr("");
+  if (!id) { showSigninErr("Enter your contractor ID first."); return; }
+  try { localStorage.setItem(LS_ID, id); } catch (e) {}
+  setAuthToken("");
+  await loadJobs();
+}
 
 /* ---------- API base ---------- */
 function apiBase(){
@@ -251,11 +346,11 @@ async function flushQueue(){
       const fd = new FormData();
       for (const p of item.photos){
         const blob = dataURLtoBlob(p.dataUrl);
-        fd.append("photos[]", blob, p.name);
+        fd.append("photos", blob, p.name);
       }
       fd.append("notes", item.notes);
-      fd.append("lat", item.lat ?? "");
-      fd.append("lng", item.lng ?? "");
+      fd.append("gpsLat", item.lat ?? "");
+      fd.append("gpsLng", item.lng ?? "");
       fd.append("inspectorId", item.inspectorId);
       fd.append("capturedAt", item.capturedAt);
       const r = await fetch(api("/orders/" + encodeURIComponent(item.orderId) + "/evidence"),
@@ -278,13 +373,6 @@ function dataURLtoBlob(dataUrl){
 function contractorId(){
   try { return (localStorage.getItem(LS_ID) || "").trim().toUpperCase(); } catch(e){ return ""; }
 }
-async function signin(){
-  const id = $("contractorId").value.trim().toUpperCase();
-  $("signinErr").style.display = "none";
-  if (!id){ $("signinErr").textContent = "Enter your contractor ID first."; $("signinErr").style.display="block"; return; }
-  try { localStorage.setItem(LS_ID, id); } catch(e){}
-  await loadJobs();
-}
 
 /* ---------- jobs ---------- */
 function normalizeJobs(data){
@@ -296,9 +384,18 @@ async function loadJobs(){
   const list = $("jobsList");
   list.innerHTML = '<div class="spinner"></div>';
   show("view-jobs");
+  const t = authToken();
   try {
-    const r = await fetch(api("/contractor/" + encodeURIComponent(contractorId()) + "/jobs"),
-                          { headers: { "Accept": "application/json" } });
+    // Prefer the authenticated endpoint; fall back to the legacy ID route.
+    const url = t ? api("/contractor/jobs")
+                  : api("/contractor/" + encodeURIComponent(contractorId()) + "/jobs");
+    const r = await fetch(url, { headers: authHeaders() });
+    if (r.status === 401 && t) { // session expired
+      setAuthToken("");
+      showSigninErr("Session expired — sign in again.");
+      show("view-signin");
+      return;
+    }
     if (!r.ok) throw new Error("Server said " + r.status);
     state.jobs = normalizeJobs(await r.json());
   } catch(e){
@@ -454,14 +551,16 @@ async function submitEvidence(){
   };
   try {
     const fd = new FormData();
-    state.photos.forEach(p => fd.append("photos[]", p.blob, p.name));
+    state.photos.forEach(p => fd.append("photos", p.blob, p.name));
     fd.append("notes", payload.notes);
-    fd.append("lat", payload.lat ?? "");
-    fd.append("lng", payload.lng ?? "");
+    fd.append("gpsLat", payload.lat ?? "");
+    fd.append("gpsLng", payload.lng ?? "");
     fd.append("inspectorId", payload.inspectorId);
     fd.append("capturedAt", payload.capturedAt);
+    const headers = authHeaders();
+    delete headers["Accept"];
     const r = await fetch(api("/orders/" + encodeURIComponent(payload.orderId) + "/evidence"),
-                          { method: "POST", body: fd });
+                          { method: "POST", headers, body: fd });
     if (!r.ok) throw new Error("Server said " + r.status);
     afterSubmit(true);
   } catch(e){
@@ -496,9 +595,12 @@ async function completeInspection(){
   err.style.display = "none";
   $("btnComplete").disabled = true;
   try {
+    const headers = { "Content-Type": "application/json" };
+    const t = authToken();
+    if (t) headers["Authorization"] = "Bearer " + t;
     const r = await fetch(api("/orders/" + encodeURIComponent(state.currentJob.id) + "/complete"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ inspectorId: contractorId() })
     });
     if (!r.ok) throw new Error("Server said " + r.status);
@@ -518,12 +620,23 @@ function escapeHtml(s){
 }
 
 /* ---------- wire up ---------- */
-$("btnSignin").addEventListener("click", signin);
-$("contractorId").addEventListener("keydown", e => { if (e.key === "Enter") signin(); });
+$("btnSendCode").addEventListener("click", sendCode);
+$("contractorEmail").addEventListener("keydown", e => { if (e.key === "Enter") sendCode(); });
+$("btnVerifyCode").addEventListener("click", verifyCode);
+$("contractorCode").addEventListener("keydown", e => { if (e.key === "Enter") verifyCode(); });
+$("btnResendCode").addEventListener("click", sendCode);
+$("btnSigninLegacy").addEventListener("click", signinLegacy);
+$("contractorId").addEventListener("keydown", e => { if (e.key === "Enter") signinLegacy(); });
 $("btnRefresh").addEventListener("click", loadJobs);
 $("btnSignout").addEventListener("click", () => {
   try { localStorage.removeItem(LS_ID); } catch(e){}
+  setAuthToken("");
+  $("contractorEmail").value = "";
+  $("contractorCode").value = "";
   $("contractorId").value = "";
+  $("signin-email-step").style.display = "block";
+  $("signin-code-step").style.display = "none";
+  showSigninErr("");
   show("view-signin");
 });
 $("btnManualJob").addEventListener("click", manualJob);
@@ -546,10 +659,13 @@ window.addEventListener("offline", setNet);
 (function init(){
   setNet();
   renderQueueBadge();
-  try { $("apiBase").value = localStorage.getItem(LS_API) || ""; } catch(e){}
-  const saved = contractorId();
-  if (saved){
-    $("contractorId").value = saved;
+  try {
+    $("apiBase").value = localStorage.getItem(LS_API) || "";
+    const savedEmail = localStorage.getItem(LS_EMAIL) || "";
+    if (savedEmail) $("contractorEmail").value = savedEmail;
+  } catch(e){}
+  // Prefer token auth; fall back to legacy ID.
+  if (authToken() || contractorId()){
     loadJobs();
   }
   flushQueue();

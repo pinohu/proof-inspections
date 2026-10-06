@@ -21,11 +21,15 @@
       </span>
       Proof Inspections
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" id="nav-links">
       <a href="/#how">How it works</a>
       <a href="/#pricing">Pricing</a>
+      <a href="/portal">Sign in</a>
       <a class="btn btn-primary btn-sm" href="/#order">Order — $199</a>
     </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
   </div>
 </header>
 
@@ -83,5 +87,17 @@
 
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/track.js"></script>
+<script>
+  // Mobile nav toggle (shared pattern with index.html).
+  (function () {
+    var toggle = document.getElementById('nav-toggle');
+    var links = document.getElementById('nav-links');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
 </body>
 </html>

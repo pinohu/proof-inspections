@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Proof Inspections</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d7a5f' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E" />
+</head>
+<body class="admin-body">
+
+  <!-- ============ AUTH VIEW ============ -->
+  <div id="auth-view" class="auth-wrap" hidden>
+    <div class="auth-card">
+      <div class="brand" aria-hidden="true">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+        </span>
+        Proof Inspections
+      </div>
+
+      <!-- Step 1: email -->
+      <div id="step-email">
+        <h2>Admin sign in</h2>
+        <p class="form-sub">Enter your email and we&rsquo;ll send you a sign-in code.</p>
+        <div class="form-alert" id="email-alert" role="alert"></div>
+        <form id="email-form" novalidate>
+          <div class="field">
+            <label for="auth-email">Email address</label>
+            <input type="email" id="auth-email" name="email" placeholder="you@example.com" autocomplete="email" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="send-code-btn">Send code</button>
+        </form>
+      </div>
+
+      <!-- Step 2: code -->
+      <div id="step-code" hidden>
+        <h2>Check your inbox</h2>
+        <p class="form-sub">We sent a 6-character code to <strong id="code-email"></strong>.</p>
+        <div class="form-alert" id="code-alert" role="alert"></div>
+        <form id="code-form" novalidate>
+          <div class="field">
+            <label for="auth-code">Sign-in code</label>
+            <input type="text" id="auth-code" name="code" class="code-input" placeholder="••••••" maxlength="6" autocomplete="one-time-code" inputmode="text" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="verify-btn">Sign in</button>
+        </form>
+        <div style="text-align:center">
+          <button type="button" class="back-link" id="back-to-email">&larr; Use a different email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APP VIEW ============ -->
+  <div id="app-view" hidden>
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <a class="brand" href="/admin.html">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          </span>
+          Admin
+        </a>
+        <nav class="admin-tabs" role="tablist" aria-label="Dashboard sections">
+          <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+          <button class="tab-btn" data-tab="orders" role="tab" aria-selected="false">Orders</button>
+          <button class="tab-btn" data-tab="contractors" role="tab" aria-selected="false">Contractors</button>
+          <button class="tab-btn" data-tab="emails" role="tab" aria-selected="false">Emails</button>
+        </nav>
+        <div class="admin-user">
+          <span id="admin-email"></span>
+          <button class="signout-btn" id="signout-btn" type="button">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <section class="view active" id="view-overview" role="tabpanel"></section>
+      <section class="view" id="view-orders" role="tabpanel"></section>
+      <section class="view" id="view-contractors" role="tabpanel"></section>
+      <section class="view" id="view-emails" role="tabpanel"></section>
+    </main>
+  </div>
+
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

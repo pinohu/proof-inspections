@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Proof Inspections — Cryptographically-Verified Property Inspections</title>
-  <meta name="description" content="Order a property inspection online. Every inspection comes with a tamper-proof, cryptographically-signed proof bundle you can independently verify." />
+  <title>Proof Inspections — Know the Truth About Any Property</title>
+  <meta name="description" content="Order a property inspection online. Get the answer you need — approve the claim, settle the deposit, close the deal — backed by tamper-proof evidence you can verify yourself." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -21,35 +21,39 @@
       </span>
       Proof Inspections
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" id="nav-links">
+      <a href="#who">Who it's for</a>
       <a href="#how">How it works</a>
-      <a href="#types">Inspection types</a>
       <a href="#pricing">Pricing</a>
       <a href="/track">Track order</a>
+      <a href="/portal">Sign in</a>
       <a class="btn btn-primary btn-sm" href="#order">Order — $199</a>
     </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
   </div>
 </header>
 
 <main>
-  <!-- HERO -->
+  <!-- HERO — the decision, not the solution -->
   <section class="hero">
     <div class="container">
-      <span class="eyebrow"><span class="dot"></span>Tamper-proof property evidence</span>
-      <h1>Cryptographically-Verified <span class="hl">Property Inspections</span></h1>
+      <span class="eyebrow"><span class="dot"></span>Property truth, with proof</span>
+      <h1>Get the answer you need about <span class="hl">any property</span></h1>
       <p class="hero-sub">
-        Order an inspection online. A licensed inspector documents the property, and every
-        photo, timestamp, and GPS coordinate is sealed with a cryptographic signature.
-        You get proof nobody can forge, alter, or dispute — verifiable by anyone, forever.
+        Not just photos — the evidence to make your decision and defend it.
+        Every inspection is sealed with cryptographic proof that nobody can forge,
+        alter, or dispute. Verifiable by anyone, forever.
       </p>
       <div class="hero-cta">
         <a class="btn btn-primary btn-lg" href="#order">Order an inspection — $199</a>
-        <a class="btn btn-secondary btn-lg" href="#how">How it works</a>
+        <a class="btn btn-secondary btn-lg" href="#who">Find your situation</a>
       </div>
       <div class="trust-row">
         <span class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-          Signed evidence bundle
+          Proof that holds up
         </span>
         <span class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>
@@ -61,64 +65,135 @@
         </span>
         <span class="trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Independently verifiable
+          Verify it yourself
         </span>
       </div>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
-  <section class="section" id="how">
+  <!-- WHO IT'S FOR — three personas, three real jobs -->
+  <section class="section" id="who">
     <div class="container">
-      <h2>From order to proof in four steps</h2>
-      <p class="section-lead">No phone tag, no paperwork. The whole process runs online, and the evidence protects itself.</p>
+      <h2>What's the decision you're trying to make?</h2>
+      <p class="section-lead">Nobody orders an inspection for fun. Pick your situation — we'll get you the answer you actually need.</p>
+      <div class="persona-grid">
+
+        <div class="persona-card">
+          <div class="persona-tag">Insurance claims</div>
+          <h3>"Should I approve this claim?"</h3>
+          <p class="persona-job">
+            You're staring at a claim file. The photos from the homeowner look selective.
+            You need to know — quickly, defensibly — whether the damage is real, recent,
+            and worth what they're asking.
+          </p>
+          <ul class="persona-points">
+            <li><strong>Your real question:</strong> Is this damage real and documented well enough to approve?</li>
+            <li><strong>Your decision:</strong> Approve the claim, or flag it for in-person review.</li>
+            <li><strong>Your time:</strong> Minutes per file, dozens per day.</li>
+          </ul>
+          <p class="persona-proof">
+            You get timestamped, GPS-sealed, cryptographically signed evidence —
+            the kind that stands up in an audit. No more "he said, she said."
+          </p>
+          <a class="btn btn-secondary" href="#order" data-persona="insurance">Order for a claim — $199</a>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-tag">Landlords &amp; managers</div>
+          <h3>"What changed — and can I prove it?"</h3>
+          <p class="persona-job">
+            Turnover day. The unit doesn't look like it did at move-in, but your memory
+            won't win a deposit dispute. You need a before-and-after record that's
+            impossible to argue with.
+          </p>
+          <ul class="persona-points">
+            <li><strong>Your real question:</strong> What changed between move-in and move-out?</li>
+            <li><strong>Your decision:</strong> Return the deposit, withhold a fair amount, or document for dispute.</li>
+            <li><strong>Your time:</strong> Five minutes per turnover, during a packed leasing week.</li>
+          </ul>
+          <p class="persona-proof">
+            You get a sealed condition record both sides can verify — disputes end
+            before they start, and good tenants see you're fair.
+          </p>
+          <a class="btn btn-secondary" href="#order" data-persona="rental-turnover">Order for a turnover — $199</a>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-tag">Buyers &amp; investors</div>
+          <h3>"Is this house what they claim?"</h3>
+          <p class="persona-job">
+            The listing looks great. But you're about to commit hundreds of thousands
+            of dollars, and a fresh coat of paint hides a lot. You need the truth —
+            documented so well you could take it to the negotiating table.
+          </p>
+          <ul class="persona-points">
+            <li><strong>Your real question:</strong> What's the real condition behind the listing?</li>
+            <li><strong>Your decision:</strong> Proceed, renegotiate the price, or walk away.</li>
+            <li><strong>Your time:</strong> Fifteen focused minutes on the report that decides everything.</li>
+          </ul>
+          <p class="persona-proof">
+            You get a complete, signed condition record — leverage for negotiation
+            and peace of mind that you're not buying someone else's problems.
+          </p>
+          <a class="btn btn-secondary" href="#order" data-persona="pre-listing">Order for a purchase — $199</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS — framed as "how you get your answer" -->
+  <section class="section section-soft" id="how">
+    <div class="container">
+      <h2>From question to answer in four steps</h2>
+      <p class="section-lead">No phone tag, no paperwork. Order online, get proof you can act on.</p>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
-          <h3>Order online</h3>
-          <p>Enter the property address, pick an inspection type, and check out in under two minutes. Flat $199 — no hidden fees.</p>
+          <h3>Tell us the property</h3>
+          <p>Address, what decision you're making, and any access details. Two minutes, flat $199.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <h3>Inspector dispatched</h3>
-          <p>A licensed local inspector is assigned and scheduled. You get a tracking link and status updates by email.</p>
+          <h3>Inspector goes out</h3>
+          <p>A licensed local inspector is dispatched within 2 business days. Track it live.</p>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <h3>Evidence captured &amp; sealed</h3>
-          <p>The inspector documents the property. Every photo is stamped with GPS, time, and a cryptographic signature at capture.</p>
+          <h3>Evidence is sealed</h3>
+          <p>Every photo is signed, GPS-stamped, and time-sealed at capture. Tampering breaks the proof — visibly.</p>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <h3>Verified report delivered</h3>
-          <p>You receive a tamper-evident report plus a proof bundle anyone can independently verify — insurers, lenders, courts.</p>
+          <h3>You get your answer</h3>
+          <p>A clear report built around your decision — plus the raw proof bundle anyone can verify independently.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- WHAT MAKES IT PROOF -->
-  <section class="section section-soft" id="proof">
+  <!-- WHY PROOF MATTERS — the three dimensions -->
+  <section class="section" id="proof">
     <div class="container">
-      <h2>Not just photos. Proof.</h2>
-      <p class="section-lead">A regular inspection gives you pictures. We give you evidence that holds up when it matters — in a claim, a dispute, or a courtroom.</p>
+      <h2>Why "proof" and not just "photos"?</h2>
+      <p class="section-lead">Because your decision has to survive contact with the other side.</p>
       <div class="proof-grid">
         <div class="proof-card">
           <div class="proof-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           </div>
           <div>
-            <h3>Signed photos</h3>
-            <p>Each photo is digitally signed by the inspector's key at the moment of capture. Any edit after the fact breaks the signature — visibly.</p>
+            <h3>Decide with confidence</h3>
+            <p>The functional job: signed photos, sealed timestamps, GPS coordinates. You know what you're looking at is real — not staged, not stale, not edited.</p>
           </div>
         </div>
         <div class="proof-card">
           <div class="proof-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>
           </div>
           <div>
-            <h3>GPS &amp; time sealed</h3>
-            <p>Location coordinates and timestamps are bound into the evidence at capture — proving the inspector was at the property, when claimed.</p>
+            <h3>Defend your call</h3>
+            <p>The social job: when the claimant, tenant, or seller pushes back, you show the proof — not your opinion. Independently verifiable by anyone.</p>
           </div>
         </div>
         <div class="proof-card">
@@ -126,58 +201,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 4.9v10.2c0 5-3.9 7.9-9 9.4-5.1-1.5-9-4.4-9-9.4V6.9z"/><path d="m9 12 2 2 4-4"/></svg>
           </div>
           <div>
-            <h3>Cryptographic digest</h3>
-            <p>The complete evidence set is hashed and the digest published. You can re-verify the bundle yourself at any time — no trust required.</p>
+            <h3>Sleep at night</h3>
+            <p>The emotional job: no more wondering if you approved a fraudulent claim, returned a deposit you shouldn't have, or bought a money pit. The evidence is settled.</p>
           </div>
-        </div>
-        <div class="proof-card">
-          <div class="proof-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
-          </div>
-          <div>
-            <h3>Tamper-evident report</h3>
-            <p>The PDF report carries the same signatures. If a single pixel or word is changed after issuance, verification fails.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INSPECTION TYPES -->
-  <section class="section" id="types">
-    <div class="container">
-      <h2>One price. Every inspection type.</h2>
-      <p class="section-lead">Choose the inspection that fits your situation — the proof standard is the same for all of them.</p>
-      <div class="type-grid">
-        <div class="type-card">
-          <h3>Insurance</h3>
-          <p>Document property condition for underwriting, renewals, or claims. Evidence your carrier can't argue with.</p>
-          <span class="use">For: homeowners, agents, carriers</span>
-        </div>
-        <div class="type-card">
-          <h3>Pre-listing</h3>
-          <p>Know exactly what you're selling before you list. Attach verified condition proof to the listing.</p>
-          <span class="use">For: sellers, listing agents</span>
-        </div>
-        <div class="type-card">
-          <h3>Rental turnover</h3>
-          <p>Move-in and move-out documentation that settles deposit disputes before they start.</p>
-          <span class="use">For: landlords, property managers</span>
-        </div>
-        <div class="type-card">
-          <h3>Storm damage</h3>
-          <p>Rapid post-storm documentation for claims — roof, siding, exterior. Time-stamped before repairs begin.</p>
-          <span class="use">For: homeowners, adjusters</span>
-        </div>
-        <div class="type-card">
-          <h3>General condition</h3>
-          <p>A complete picture of the property's current state — inside and out — with verified evidence throughout.</p>
-          <span class="use">For: buyers, investors, owners</span>
-        </div>
-        <div class="type-card">
-          <h3>Something else?</h3>
-          <p>Tell us what you need in the order notes. If it involves documenting a property, we can prove it.</p>
-          <span class="use">For: anyone with a property</span>
         </div>
       </div>
     </div>
@@ -187,32 +213,32 @@
   <section class="section section-soft" id="pricing">
     <div class="container">
       <div class="center">
-        <h2>Simple, upfront pricing</h2>
-        <p class="section-lead">One flat rate. No tiers, no upsells, no surprise fees.</p>
+        <h2>One price. Every situation.</h2>
+        <p class="section-lead">No tiers, no upsells. The proof standard is the same whether it's a $5,000 claim or a $500,000 purchase.</p>
       </div>
       <div class="price-wrap">
         <div class="price-card">
           <div class="price-amount">$199</div>
-          <div class="price-per">per inspection · any type · any property</div>
+          <div class="price-per">per inspection · any property · any decision</div>
           <ul class="price-list">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Full on-site inspection by a licensed inspector</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Cryptographically-signed photo evidence bundle</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Tamper-evident PDF report in 24–48 hours</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Independent verification — check the proof yourself</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Live order tracking from dispatch to delivery</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Cryptographically-signed evidence bundle</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Decision-focused report in 24–48 hours</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Verify the proof yourself — no trust required</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Live tracking from dispatch to delivery</li>
           </ul>
           <a class="btn btn-primary btn-lg btn-block" href="#order">Order now — $199</a>
-          <p class="price-note">Payment is collected securely at checkout. Inspections are scheduled within 2 business days in our current service area.</p>
+          <p class="price-note">Payment collected securely at checkout. Inspections scheduled within 2 business days in our current service area.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ORDER -->
+  <!-- ORDER — starts with the decision -->
   <section class="section" id="order">
     <div class="container">
       <h2>Order your inspection</h2>
-      <p class="section-lead">Takes about two minutes. We'll confirm by email and dispatch an inspector.</p>
+      <p class="section-lead">Start with what you're deciding — we'll tailor the inspection to it. Takes about two minutes.</p>
       <div class="order-grid">
         <div class="form-card">
           <div id="order-form-wrap">
@@ -220,6 +246,18 @@
             <p class="form-sub">All fields required except notes.</p>
             <div class="form-alert" id="order-alert" role="alert"></div>
             <form id="order-form" novalidate>
+              <div class="field" data-field="inspectionType">
+                <label for="f-type">What decision are you making?</label>
+                <select id="f-type" name="inspectionType">
+                  <option value="">Select your situation…</option>
+                  <option value="insurance">Insurance — approve or flag a claim</option>
+                  <option value="rental-turnover">Rental — document a turnover / deposit decision</option>
+                  <option value="pre-listing">Purchase — verify condition before buying</option>
+                  <option value="storm-damage">Storm damage — document for a claim</option>
+                  <option value="general">General — document current condition</option>
+                </select>
+                <span class="field-error">Please choose your situation.</span>
+              </div>
               <div class="field-row">
                 <div class="field" data-field="customerName">
                   <label for="f-name">Full name</label>
@@ -242,21 +280,9 @@
                 <input type="text" id="f-address" name="propertyAddress" placeholder="123 W 8th St, Erie, PA 16502" autocomplete="street-address" />
                 <span class="field-error">Please enter the property address.</span>
               </div>
-              <div class="field" data-field="inspectionType">
-                <label for="f-type">Inspection type</label>
-                <select id="f-type" name="inspectionType">
-                  <option value="">Select an inspection type…</option>
-                  <option value="insurance">Insurance</option>
-                  <option value="pre-listing">Pre-listing</option>
-                  <option value="rental-turnover">Rental turnover</option>
-                  <option value="storm-damage">Storm damage</option>
-                  <option value="general">General condition</option>
-                </select>
-                <span class="field-error">Please choose an inspection type.</span>
-              </div>
               <div class="field" data-field="notes">
-                <label for="f-notes">Notes <span style="font-weight:400;color:var(--faint)">(optional)</span></label>
-                <textarea id="f-notes" name="notes" placeholder="Gate code, access instructions, areas of concern…"></textarea>
+                <label for="f-notes">Anything we should focus on? <span style="font-weight:400;color:var(--faint)">(optional)</span></label>
+                <textarea id="f-notes" name="notes" placeholder="e.g. Roof damage from last week's storm — focus on the north slope. Gate code 4410."></textarea>
               </div>
               <button type="submit" class="btn btn-primary btn-lg btn-block" id="order-submit">
                 Place order — $199
@@ -299,14 +325,62 @@
           <ul class="sum-steps">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Inspector scheduled within 2 business days</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Status updates by email at every step</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Signed report delivered in 24–48 hours</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Decision-ready report in 24–48 hours</li>
           </ul>
         </aside>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
+  <!-- GUARANTEE -->
+  <section class="section" id="guarantee">
+    <div class="container">
+      <div class="guarantee-band reveal">
+        <div class="guarantee-seal" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div>
+          <h2>The Proof Guarantee</h2>
+          <p>
+            If your proof bundle ever fails independent verification — a broken signature,
+            a tampered photo, a timestamp that doesn't hold — we refund your $199 in full
+            and re-inspect free. The evidence either stands up, or you don't pay. That's
+            what "proof, not promises" means.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section section-soft" id="testimonials">
+    <div class="container">
+      <div class="center">
+        <h2>The decisions proof settles</h2>
+        <p class="section-lead">Illustrative scenarios based on the jobs this service is built for. Customer stories coming soon.</p>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card reveal">
+          <div class="testi-stars" aria-label="Example scenario">EXAMPLE</div>
+          <p class="testi-quote">"The claim file had contractor photos that didn't match the homeowner's story. One inspection ended the debate — the timestamped roof photos showed the damage predated the policy."</p>
+          <div class="testi-who"><strong>Insurance</strong>Approve the claim, or flag it — with evidence that survives audit.</div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="testi-stars" aria-label="Example scenario">EXAMPLE</div>
+          <p class="testi-quote">"Tenant disputed the move-out charges. The signed move-in/move-out comparison ended it the same day — the proof link did what two emails couldn't."</p>
+          <div class="testi-who"><strong>Landlord</strong>Settle deposit disputes before they start.</div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="testi-stars" aria-label="Example scenario">EXAMPLE</div>
+          <p class="testi-quote">"Listing said 'newer roof.' The inspection found two layers and active leaks — with photos verifiable independently. Renegotiated thousands off the price."</p>
+          <div class="testi-who"><strong>Buyer</strong>Know the truth before you commit.</div>
+        </div>
+      </div>
+      <p class="testi-note">Have a Proof Inspections story? We'd love to feature it — <a href="mailto:hello@proofinspections.com">hello@proofinspections.com</a>.</p>
+    </div>
+  </section>
+
+  <!-- FAQ — answered in each persona's language -->
   <section class="section section-soft" id="faq">
     <div class="container">
       <div class="center">
@@ -315,16 +389,20 @@
       </div>
       <div class="faq">
         <details>
-          <summary>What does "cryptographically verified" actually mean?</summary>
-          <div class="faq-body"><p>Every photo the inspector takes is digitally signed at capture with their private key, and stamped with GPS coordinates and time. The full set is hashed into a single digest. If anyone alters a photo, a timestamp, or a word of the report afterward, the signatures no longer match — and anyone can check that independently. It's the same math that secures online banking, applied to your property.</p></div>
+          <summary>What does "proof" actually mean here?</summary>
+          <div class="faq-body"><p>Every photo the inspector takes is digitally signed at capture, stamped with GPS coordinates and time. The full set is hashed into a single digest. If anyone alters a photo, a timestamp, or a word of the report afterward, the signatures no longer match — and anyone can check that independently. It's the same math that secures online banking, applied to your property decision.</p></div>
+        </details>
+        <details>
+          <summary>I'm handling a claim — how fast can I get the report?</summary>
+          <div class="faq-body"><p>Reports are delivered within 24–48 hours of the inspection. The report leads with a clear condition summary — built for a quick decision, not a long read. The full signed evidence bundle is attached for your file.</p></div>
+        </details>
+        <details>
+          <summary>Can I use this in a deposit dispute?</summary>
+          <div class="faq-body"><p>Yes — that's one of the most common uses. The move-in/move-out documentation is timestamped, GPS-sealed, and cryptographically signed, which makes it very hard to dispute. Many landlords tell us disputes end as soon as they share the proof link.</p></div>
         </details>
         <details>
           <summary>Who performs the inspections?</summary>
           <div class="faq-body"><p>Licensed local inspectors in our contractor network. Each inspector holds their own signing key, so every piece of evidence is attributable to the person who captured it.</p></div>
-        </details>
-        <details>
-          <summary>How do I verify the proof myself?</summary>
-          <div class="faq-body"><p>Your report page includes the proof bundle download and the published digest. We provide a verification guide — you don't need special software, and you don't have to take our word for anything.</p></div>
         </details>
         <details>
           <summary>What areas do you serve?</summary>
@@ -349,19 +427,27 @@
           </span>
           Proof Inspections
         </a>
-        <p>Tamper-proof property evidence. Order online, get proof you can verify.</p>
+        <p>Property truth, with proof. Order online, get the answer you need.</p>
       </div>
       <div class="foot-links">
         <div class="foot-col">
           <h5>Product</h5>
+          <a href="#who">Who it's for</a>
           <a href="#how">How it works</a>
-          <a href="#types">Inspection types</a>
           <a href="#pricing">Pricing</a>
+          <a href="#guarantee">Our guarantee</a>
         </div>
         <div class="foot-col">
           <h5>Orders</h5>
           <a href="#order">Order an inspection</a>
           <a href="/track">Track your order</a>
+          <a href="/portal">Customer sign in</a>
+        </div>
+        <div class="foot-col">
+          <h5>Contact</h5>
+          <a href="mailto:hello@proofinspections.com">hello@proofinspections.com</a>
+          <a href="tel:+18145550199">(814) 555-0199</a>
+          <span style="display:block;font-size:14.5px;color:var(--ink-soft);margin-bottom:9px">Erie, PA &amp; surrounding region</span>
         </div>
       </div>
     </div>
@@ -380,5 +466,49 @@
 </script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/order.js"></script>
+<script>
+  // Persona buttons preselect the matching inspection type in the order form.
+  document.querySelectorAll('[data-persona]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var type = btn.getAttribute('data-persona');
+      setTimeout(function () {
+        var sel = document.getElementById('f-type');
+        if (sel) {
+          sel.value = type;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, 50);
+    });
+  });
+
+  // Mobile nav toggle.
+  (function () {
+    var toggle = document.getElementById('nav-toggle');
+    var links = document.getElementById('nav-links');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.addEventListener('click', function (e) {
+      if (e.target.closest('a')) links.classList.remove('open');
+    });
+  })();
+
+  // Reveal on scroll (subtle, respects reduced motion via CSS).
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window) || !els.length) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
 </body>
 </html>
