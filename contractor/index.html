@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b3d2e">
+<title>Proof Inspections — Contractor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ProofInspect">
+<style>
+  :root{
+    --bg:#0e1512; --card:#16211c; --card2:#1c2a23;
+    --ink:#f2f5f3; --muted:#9fb3a8; --line:#2a3a32;
+    --green:#2fbf71; --green-d:#0b3d2e; --amber:#f5a623; --red:#e5484d;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px; line-height:1.45; min-height:100vh;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  header.topbar{
+    position:sticky; top:0; z-index:10;
+    background:var(--green-d); color:#fff;
+    padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  header.topbar h1{font-size:19px; margin:0; font-weight:700; letter-spacing:.2px;}
+  .netbadge{font-size:13px; padding:6px 12px; border-radius:999px; background:#ffffff22; white-space:nowrap;}
+  .netbadge.off{background:var(--amber); color:#201400; font-weight:700;}
+  .queuebadge{font-size:13px; padding:6px 12px; border-radius:999px; background:var(--amber); color:#201400; font-weight:700; display:none;}
+  main{max-width:640px; margin:0 auto; padding:16px 16px 40px;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin:0 0 14px;}
+  .card h2{margin:0 0 6px; font-size:20px;}
+  .addr{font-size:19px; font-weight:700;}
+  .meta{color:var(--muted); font-size:15px; margin-top:6px;}
+  .notes-preview{margin-top:8px; font-size:15px; color:var(--ink); background:var(--card2); border-radius:10px; padding:10px 12px;}
+  label.lbl{display:block; font-weight:700; margin:18px 0 8px; font-size:17px;}
+  input[type=text], input[type=tel], textarea{
+    width:100%; font-size:18px; padding:14px; border-radius:12px;
+    border:1px solid var(--line); background:var(--card2); color:var(--ink);
+  }
+  textarea{min-height:120px; resize:vertical;}
+  button.btn{
+    display:block; width:100%; border:0; border-radius:14px;
+    font-size:19px; font-weight:700; padding:16px; margin:12px 0;
+    background:var(--green); color:#04240f; cursor:pointer;
+    min-height:56px;
+  }
+  button.btn:active{transform:scale(.985);}
+  button.btn.secondary{background:var(--card2); color:var(--ink); border:1px solid var(--line);}
+  button.btn.danger{background:var(--red); color:#fff;}
+  button.btn:disabled{opacity:.45; cursor:default;}
+  .hint{color:var(--muted); font-size:14px; margin:8px 0;}
+  .thumbs{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0;}
+  .thumb{position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--line); aspect-ratio:1;}
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb button{
+    position:absolute; top:4px; right:4px; width:34px; height:34px; border-radius:50%;
+    background:#000a; color:#fff; border:0; font-size:18px; line-height:1;
+  }
+  .gpsrow{display:flex; align-items:center; gap:10px; font-size:15px; color:var(--muted); margin:10px 0;}
+  .gpsdot{width:12px; height:12px; border-radius:50%; background:var(--amber); flex:none;}
+  .gpsdot.ok{background:var(--green);}
+  .gpsdot.bad{background:var(--red);}
+  .spinner{width:46px; height:46px; border:5px solid var(--line); border-top-color:var(--green);
+    border-radius:50%; margin:30px auto; animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .center{text-align:center; padding:24px 0;}
+  .bigcheck{font-size:64px;}
+  .err{background:#3a1416; border:1px solid var(--red); color:#ffd7d9; border-radius:12px; padding:12px 14px; margin:12px 0; font-size:15px;}
+  .ok{background:#0f2f1f; border:1px solid var(--green); color:#c9f2da; border-radius:12px; padding:12px 14px; margin:12px 0; font-size:15px;}
+  .jobbtn{text-align:left; background:var(--card); border:1px solid var(--line); color:var(--ink);
+    border-radius:var(--radius); padding:16px; margin:0 0 12px; width:100%; cursor:pointer; font-size:17px;}
+  .jobbtn:active{background:var(--card2);}
+  .jobbtn .go{color:var(--green); font-weight:700; margin-top:8px; display:block; font-size:16px;}
+  .row2{display:flex; gap:10px;}
+  .row2 > *{flex:1;}
+  .smalllink{background:none; border:0; color:var(--green); font-size:15px; padding:10px; text-decoration:underline; cursor:pointer;}
+  details.adv{margin-top:14px; font-size:14px; color:var(--muted);}
+  details.adv summary{cursor:pointer; padding:8px 0;}
+  .count-pill{display:inline-block; background:var(--card2); border:1px solid var(--line);
+    border-radius:999px; padding:4px 12px; font-size:14px; margin:4px 6px 4px 0;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>ProofInspect</h1>
+  <div>
+    <span class="queuebadge" id="queueBadge">0 queued</span>
+    <span class="netbadge" id="netBadge">online</span>
+  </div>
+</header>
+<main>
+
+  <!-- SIGN IN -->
+  <section class="view active" id="view-signin">
+    <div class="card">
+      <h2>Contractor sign-in</h2>
+      <p class="hint">Enter the contractor ID code you were given. It stays saved on this device.</p>
+      <label class="lbl" for="contractorId">Contractor ID</label>
+      <input type="text" id="contractorId" inputmode="text" autocomplete="off"
+             autocapitalize="characters" placeholder="e.g. LM-001" style="text-transform:uppercase">
+      <button class="btn" id="btnSignin">Show my jobs</button>
+      <div class="err" id="signinErr" style="display:none"></div>
+    </div>
+    <details class="adv">
+      <summary>Advanced: API server</summary>
+      <label class="lbl" for="apiBase">API base URL (leave blank = same server)</label>
+      <input type="text" id="apiBase" placeholder="https://api.example.com" autocomplete="off">
+      <button class="btn secondary" id="btnSaveApi">Save API URL</button>
+    </details>
+  </section>
+
+  <!-- JOB LIST -->
+  <section class="view" id="view-jobs">
+    <div class="row2">
+      <button class="btn secondary" id="btnRefresh">↻ Refresh jobs</button>
+      <button class="btn secondary" id="btnSignout">Sign out</button>
+    </div>
+    <div id="jobsList"></div>
+    <div class="center">
+      <button class="smalllink" id="btnManualJob">Have a job code? Enter it manually</button>
+    </div>
+  </section>
+
+  <!-- CAPTURE -->
+  <section class="view" id="view-capture">
+    <div class="card">
+      <div class="addr" id="capAddr">—</div>
+      <div class="meta" id="capMeta">—</div>
+      <div class="notes-preview" id="capNotes" style="display:none"></div>
+    </div>
+
+    <label class="lbl">Photos <span class="count-pill" id="photoCount">0</span></label>
+    <p class="hint">Take before, during, and after photos. Tap multiple times to add more.</p>
+    <button class="btn" id="btnPhoto">📷 Take photo</button>
+    <input type="file" id="photoInput" accept="image/*" capture="environment" multiple hidden>
+    <div class="thumbs" id="thumbs"></div>
+
+    <label class="lbl" for="capNotesField">Condition notes</label>
+    <textarea id="capNotesField" placeholder="Describe what you see: roof condition, damage, measurements, anything the customer should know…"></textarea>
+
+    <div class="gpsrow"><span class="gpsdot" id="gpsDot"></span><span id="gpsText">Getting location…</span></div>
+
+    <button class="btn" id="btnSubmit">Submit evidence</button>
+    <div class="err" id="capErr" style="display:none"></div>
+    <div class="ok" id="capOk" style="display:none"></div>
+    <button class="btn secondary" id="btnBackJobs">← Back to jobs</button>
+  </section>
+
+  <!-- DONE / COMPLETE -->
+  <section class="view" id="view-done">
+    <div class="card center">
+      <div class="bigcheck">✅</div>
+      <h2>Evidence submitted</h2>
+      <p class="hint" id="doneSummary">Your photos and notes were received.</p>
+      <button class="btn" id="btnComplete">Mark inspection complete</button>
+      <div class="err" id="doneErr" style="display:none"></div>
+      <button class="btn secondary" id="btnMoreJobs">Back to job list</button>
+    </div>
+  </section>
+
+  <!-- FINISHED -->
+  <section class="view" id="view-finished">
+    <div class="card center">
+      <div class="bigcheck">🏁</div>
+      <h2>Inspection complete</h2>
+      <p class="hint">Nice work. The signed proof is on its way to the customer.</p>
+      <button class="btn" id="btnFinishJobs">Back to job list</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+"use strict";
+/* ProofInspect contractor PWA — brutally simple field capture.
+   API contract:
+     GET  {api}/contractor/:id/jobs            -> [{id,address,type,notes,...}] or {jobs:[...]}
+     POST {api}/orders/:id/evidence            -> multipart: photos[], notes, lat, lng, inspectorId, capturedAt
+     POST {api}/orders/:id/complete            -> json {inspectorId}
+*/
+
+const $ = (id) => document.getElementById(id);
+const LS_ID = "pi_contractor_id", LS_API = "pi_api_base", LS_QUEUE = "pi_queue_v1";
+
+const state = {
+  jobs: [],
+  currentJob: null,
+  photos: [],          // [{blob, url, name}]
+  gps: null,           // {lat,lng,acc}
+  submitting: false,
+};
+
+/* ---------- API base ---------- */
+function apiBase(){
+  let b = "";
+  try { b = localStorage.getItem(LS_API) || ""; } catch(e){}
+  const q = new URLSearchParams(location.search).get("api");
+  if (q) { b = q; try{ localStorage.setItem(LS_API, b); }catch(e){} }
+  return (b || "").replace(/\/+$/, "");
+}
+function api(path){ return apiBase() + path; }
+
+/* ---------- views ---------- */
+function show(id){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+/* ---------- network / queue ---------- */
+function setNet(){
+  const on = navigator.onLine;
+  const b = $("netBadge");
+  b.textContent = on ? "online" : "OFFLINE";
+  b.classList.toggle("off", !on);
+}
+function getQueue(){
+  try { return JSON.parse(localStorage.getItem(LS_QUEUE) || "[]"); }
+  catch(e){ return []; }
+}
+function setQueue(q){
+  try { localStorage.setItem(LS_QUEUE, JSON.stringify(q)); } catch(e){}
+  renderQueueBadge();
+}
+function renderQueueBadge(){
+  const q = getQueue();
+  const b = $("queueBadge");
+  if (q.length){ b.style.display = "inline-block"; b.textContent = q.length + " queued"; }
+  else { b.style.display = "none"; }
+}
+async function flushQueue(){
+  if (!navigator.onLine) return;
+  const q = getQueue();
+  if (!q.length) return;
+  const remaining = [];
+  for (const item of q){
+    try {
+      const fd = new FormData();
+      for (const p of item.photos){
+        const blob = dataURLtoBlob(p.dataUrl);
+        fd.append("photos[]", blob, p.name);
+      }
+      fd.append("notes", item.notes);
+      fd.append("lat", item.lat ?? "");
+      fd.append("lng", item.lng ?? "");
+      fd.append("inspectorId", item.inspectorId);
+      fd.append("capturedAt", item.capturedAt);
+      const r = await fetch(api("/orders/" + encodeURIComponent(item.orderId) + "/evidence"),
+                            { method:"POST", body: fd });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+    } catch(e){ remaining.push(item); }
+  }
+  setQueue(remaining);
+}
+function dataURLtoBlob(dataUrl){
+  const [head, data] = dataUrl.split(",");
+  const mime = (head.match(/:(.*?);/) || [])[1] || "image/jpeg";
+  const bin = atob(data);
+  const arr = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], {type: mime});
+}
+
+/* ---------- sign in ---------- */
+function contractorId(){
+  try { return (localStorage.getItem(LS_ID) || "").trim().toUpperCase(); } catch(e){ return ""; }
+}
+async function signin(){
+  const id = $("contractorId").value.trim().toUpperCase();
+  $("signinErr").style.display = "none";
+  if (!id){ $("signinErr").textContent = "Enter your contractor ID first."; $("signinErr").style.display="block"; return; }
+  try { localStorage.setItem(LS_ID, id); } catch(e){}
+  await loadJobs();
+}
+
+/* ---------- jobs ---------- */
+function normalizeJobs(data){
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.jobs)) return data.jobs;
+  return [];
+}
+async function loadJobs(){
+  const list = $("jobsList");
+  list.innerHTML = '<div class="spinner"></div>';
+  show("view-jobs");
+  try {
+    const r = await fetch(api("/contractor/" + encodeURIComponent(contractorId()) + "/jobs"),
+                          { headers: { "Accept": "application/json" } });
+    if (!r.ok) throw new Error("Server said " + r.status);
+    state.jobs = normalizeJobs(await r.json());
+  } catch(e){
+    list.innerHTML = '<div class="err">Could not load jobs (' + escapeHtml(e.message) +
+      '). Check your connection, then tap Refresh — or enter a job code manually below.</div>';
+    state.jobs = [];
+    return;
+  }
+  renderJobs();
+}
+function renderJobs(){
+  const list = $("jobsList");
+  if (!state.jobs.length){
+    list.innerHTML = '<div class="card"><p class="hint">No jobs assigned right now. Pull to refresh later, or enter a job code manually.</p></div>';
+    return;
+  }
+  list.innerHTML = "";
+  state.jobs.forEach(j => {
+    const b = document.createElement("button");
+    b.className = "jobbtn";
+    b.innerHTML =
+      '<div class="addr">' + escapeHtml(j.address || j.propertyAddress || "Address TBD") + '</div>' +
+      '<div class="meta">' + escapeHtml([j.type, j.inspectionType, j.scheduledAt].filter(Boolean).join(" · ")) + '</div>' +
+      (j.notes || j.customerNotes ? '<div class="notes-preview">' + escapeHtml(j.notes || j.customerNotes) + '</div>' : '') +
+      '<span class="go">Start inspection →</span>';
+    b.addEventListener("click", () => openCapture(j));
+    list.appendChild(b);
+  });
+}
+function manualJob(){
+  const code = prompt("Enter the job / order code:");
+  if (!code || !code.trim()) return;
+  openCapture({ id: code.trim(), address: "Job " + code.trim(), type: "", notes: "" });
+}
+
+/* ---------- capture ---------- */
+function openCapture(job){
+  state.currentJob = job;
+  state.photos = [];
+  state.gps = null;
+  $("capNotesField").value = "";
+  $("capErr").style.display = "none";
+  $("capOk").style.display = "none";
+  $("capAddr").textContent = job.address || job.propertyAddress || ("Job " + job.id);
+  $("capMeta").textContent = [job.type || job.inspectionType, job.id ? ("#" + job.id) : ""].filter(Boolean).join(" · ");
+  const n = job.notes || job.customerNotes;
+  if (n){ $("capNotes").style.display = "block"; $("capNotes").textContent = n; }
+  else { $("capNotes").style.display = "none"; }
+  renderThumbs();
+  updateGpsUI("wait");
+  show("view-capture");
+  refreshGps();
+}
+function refreshGps(){
+  updateGpsUI("wait");
+  if (!navigator.geolocation){ updateGpsUI("bad"); return; }
+  navigator.geolocation.getCurrentPosition(
+    p => { state.gps = { lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }; updateGpsUI("ok"); },
+    () => updateGpsUI("bad"),
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+  );
+}
+function updateGpsUI(s){
+  const dot = $("gpsDot"), txt = $("gpsText");
+  dot.className = "gpsdot" + (s === "ok" ? " ok" : s === "bad" ? " bad" : "");
+  if (s === "ok") txt.textContent = "Location locked (" + state.gps.lat.toFixed(5) + ", " + state.gps.lng.toFixed(5) + ")";
+  else if (s === "bad") txt.textContent = "Location unavailable — you can still submit.";
+  else txt.textContent = "Getting location…";
+}
+function downscale(file, maxDim, quality){
+  maxDim = maxDim || 1600; quality = quality || 0.82;
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => resolve(b || file), "image/jpeg", quality);
+      } catch(e){ URL.revokeObjectURL(url); resolve(file); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+async function onPhotosChosen(ev){
+  const files = Array.from(ev.target.files || []);
+  ev.target.value = ""; // allow re-picking the same shot
+  for (const f of files){
+    const blob = await downscale(f);
+    state.photos.push({
+      blob,
+      url: URL.createObjectURL(blob),
+      name: "photo-" + Date.now() + "-" + state.photos.length + ".jpg"
+    });
+  }
+  renderThumbs();
+}
+function renderThumbs(){
+  const box = $("thumbs");
+  box.innerHTML = "";
+  $("photoCount").textContent = state.photos.length;
+  state.photos.forEach((p, i) => {
+    const d = document.createElement("div");
+    d.className = "thumb";
+    const img = document.createElement("img");
+    img.src = p.url; img.alt = "photo " + (i+1);
+    const x = document.createElement("button");
+    x.textContent = "✕"; x.setAttribute("aria-label", "Remove photo");
+    x.addEventListener("click", () => { URL.revokeObjectURL(p.url); state.photos.splice(i,1); renderThumbs(); });
+    d.appendChild(img); d.appendChild(x);
+    box.appendChild(d);
+  });
+}
+function blobToDataURL(blob){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(fr.result);
+    fr.onerror = rej;
+    fr.readAsDataURL(blob);
+  });
+}
+async function submitEvidence(){
+  if (state.submitting) return;
+  const err = $("capErr"), ok = $("capOk");
+  err.style.display = "none"; ok.style.display = "none";
+  if (!state.photos.length){
+    err.textContent = "Take at least one photo before submitting."; err.style.display = "block"; return;
+  }
+  state.submitting = true;
+  $("btnSubmit").disabled = true;
+  $("btnSubmit").textContent = "Submitting…";
+  // fresh GPS attempt before submit (best effort)
+  await new Promise((res) => {
+    if (!navigator.geolocation) return res();
+    navigator.geolocation.getCurrentPosition(
+      p => { state.gps = { lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy }; updateGpsUI("ok"); res(); },
+      () => res(),
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 120000 }
+    );
+  });
+  const payload = {
+    orderId: state.currentJob.id,
+    notes: $("capNotesField").value.trim(),
+    lat: state.gps ? state.gps.lat : null,
+    lng: state.gps ? state.gps.lng : null,
+    inspectorId: contractorId(),
+    capturedAt: new Date().toISOString(),
+  };
+  try {
+    const fd = new FormData();
+    state.photos.forEach(p => fd.append("photos[]", p.blob, p.name));
+    fd.append("notes", payload.notes);
+    fd.append("lat", payload.lat ?? "");
+    fd.append("lng", payload.lng ?? "");
+    fd.append("inspectorId", payload.inspectorId);
+    fd.append("capturedAt", payload.capturedAt);
+    const r = await fetch(api("/orders/" + encodeURIComponent(payload.orderId) + "/evidence"),
+                          { method: "POST", body: fd });
+    if (!r.ok) throw new Error("Server said " + r.status);
+    afterSubmit(true);
+  } catch(e){
+    // offline-tolerant: queue for retry
+    try {
+      const photos = [];
+      for (const p of state.photos) photos.push({ name: p.name, dataUrl: await blobToDataURL(p.blob) });
+      const q = getQueue();
+      q.push(Object.assign({}, payload, { photos }));
+      setQueue(q);
+      afterSubmit(false);
+    } catch(qe){
+      err.textContent = "Submit failed and could not queue offline (" + e.message + "). Try again with signal.";
+      err.style.display = "block";
+    }
+  } finally {
+    state.submitting = false;
+    $("btnSubmit").disabled = false;
+    $("btnSubmit").textContent = "Submit evidence";
+  }
+}
+function afterSubmit(wasOnline){
+  $("doneSummary").textContent = wasOnline
+    ? "Your photos and notes were received and will be sealed into the proof record."
+    : "No signal — your evidence is saved on this phone and will send automatically when you're back online.";
+  show("view-done");
+}
+
+/* ---------- complete ---------- */
+async function completeInspection(){
+  const err = $("doneErr");
+  err.style.display = "none";
+  $("btnComplete").disabled = true;
+  try {
+    const r = await fetch(api("/orders/" + encodeURIComponent(state.currentJob.id) + "/complete"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ inspectorId: contractorId() })
+    });
+    if (!r.ok) throw new Error("Server said " + r.status);
+    show("view-finished");
+  } catch(e){
+    err.textContent = "Could not mark complete (" + e.message + "). Make sure you're online, then try again.";
+    err.style.display = "block";
+  } finally {
+    $("btnComplete").disabled = false;
+  }
+}
+
+/* ---------- utils ---------- */
+function escapeHtml(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+/* ---------- wire up ---------- */
+$("btnSignin").addEventListener("click", signin);
+$("contractorId").addEventListener("keydown", e => { if (e.key === "Enter") signin(); });
+$("btnRefresh").addEventListener("click", loadJobs);
+$("btnSignout").addEventListener("click", () => {
+  try { localStorage.removeItem(LS_ID); } catch(e){}
+  $("contractorId").value = "";
+  show("view-signin");
+});
+$("btnManualJob").addEventListener("click", manualJob);
+$("btnPhoto").addEventListener("click", () => $("photoInput").click());
+$("photoInput").addEventListener("change", onPhotosChosen);
+$("btnSubmit").addEventListener("click", submitEvidence);
+$("btnBackJobs").addEventListener("click", loadJobs);
+$("btnComplete").addEventListener("click", completeInspection);
+$("btnMoreJobs").addEventListener("click", loadJobs);
+$("btnFinishJobs").addEventListener("click", loadJobs);
+$("btnSaveApi").addEventListener("click", () => {
+  try { localStorage.setItem(LS_API, $("apiBase").value.trim().replace(/\/+$/,"")); } catch(e){}
+  alert("API URL saved.");
+});
+
+window.addEventListener("online", () => { setNet(); flushQueue(); });
+window.addEventListener("offline", setNet);
+
+/* ---------- init ---------- */
+(function init(){
+  setNet();
+  renderQueueBadge();
+  try { $("apiBase").value = localStorage.getItem(LS_API) || ""; } catch(e){}
+  const saved = contractorId();
+  if (saved){
+    $("contractorId").value = saved;
+    loadJobs();
+  }
+  flushQueue();
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  }
+})();
+</script>
+</body>
+</html>
