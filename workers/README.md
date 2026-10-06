@@ -1,74 +1,36 @@
-# proof-inspections — Cloudflare Workers deployment
-
-Runs the same API as the Node.js backend (`api/`) on Cloudflare Workers,
-with D1 for metadata, R2 for photo bytes, and Web Crypto for Ed25519
-attestation. **Proof bundles are byte-compatible with the Node version**:
-same canonical JSON, same signatures, same PEM formats. A bundle signed
-by the Worker verifies with `lib/attestation` and vice versa.
+# proof-inspections — Cloudflare Workers
 
 Live at: https://inspections.lodgingconnections.com
 
-## One-time setup
+> **This branch (`pacrop-level`) is the current source of truth.** It re-syncs
+> from the live production worker (KV-backed) and adds the PA CROP-level
+> upgrade. See [PACROP-LEVEL-README.md](./PACROP-LEVEL-README.md) for the full
+> guide: customer portal, contractor accounts, admin dashboard, email
+> lifecycle, deploy instructions, and environment variables.
+
+## Quick start
 
 ```bash
 cd workers
-npm install
-
-# 1. D1 database
-wrangler d1 create proof-inspections
-# -> paste the database_id into wrangler.toml
-
-# 2. Apply schema
-wrangler d1 execute proof-inspections --file=./schema.sql
-
-# 3. R2 bucket for photos
-wrangler r2 bucket create proof-inspections-photos
-
-# 4. Signing key (Ed25519). KEEP THIS SAFE — proofs can't be re-signed.
-node tools/gen-key.mjs
-wrangler secret put PROOF_INSPECTIONS_PRIVATE_KEY_PEM
-# (paste the PEM, newlines included)
-
-# 5. Deploy (attaches inspections.lodgingconnections.com via [[routes]])
-wrangler deploy
+node tools/deploy.mjs --dry-run   # build only → /tmp/proof-worker.js
+node tools/deploy.mjs             # build + deploy to proof-inspections
 ```
 
-Local dev: `wrangler dev` (uses local D1/R2 simulators; set the key in
-`.dev.vars` — never commit that file).
+## Layout
 
-## Architecture
+- `src/index.js` — worker entrypoint, router, all handlers (KV-backed)
+- `src/auth.js` — passwordless auth (email + 6-char code)
+- `src/email.js` / `src/email-templates.js` — transactional email service
+- `src/stripe.js` — Stripe PaymentIntents + webhooks
+- `src/attestation.js` — Ed25519 proof bundles
+- `public/` — landing, portal, admin, tracking, contractor PWA
+- `tools/deploy.mjs` — build + deploy (esbuild, inline assets, CF Scripts API)
 
-| Concern      | Node version          | Workers version              |
-|--------------|-----------------------|------------------------------|
-| HTTP         | Express               | `src/index.js` router        |
-| Metadata     | `node:sqlite` file    | D1 (`schema.sql`)            |
-| Photos       | `./data/photos/`      | R2 `proof-inspections-photos`|
-| Signing      | `node:crypto` Ed25519 | Web Crypto Ed25519           |
-| Multipart    | `api/multipart.js`    | `src/multipart.js` (port)    |
-| Key storage  | `./data/keys/`        | `PROOF_INSPECTIONS_PRIVATE_KEY_PEM` secret |
+## Key endpoints
 
-`src/attestation.js` is a line-for-line port of `lib/attestation/index.js`
-to async Web Crypto. Canonical JSON, SHA-256, signature encoding, and PEM
-layout are identical — cross-verified by `workers/test-compat.mjs`.
-
-## Endpoints
-
-Same contract as the Node API (see repo root README):
-
-- `GET /health`
-- `GET /.well-known/proof-inspections-key`
-- `POST /orders`, `GET /orders/:id`
-- `POST /orders/:id/evidence` (multipart)
-- `POST /orders/:id/complete`
-- `GET /proof/:id`, `GET /proof/:id/photo/:filename`
-- `/` landing, `/track/*` tracking, `/contractor/*` PWA (static assets)
-
-## Notes
-
-- Request bodies are capped at 50 MB (Workers platform limit; the Node
-  version allows 120 MB).
-- The signing key is cached per isolate after first import.
-- D1 `batch()` is used for evidence+photo metadata writes (atomic).
-- Photo reads are immutable-cached (`Cache-Control: public, max-age=31536000, immutable`).
-- Not yet ported: Stripe billing, PDF reports, dispatch poller
-  (`automation/`). Those can run as a separate scheduled Worker later.
+| Area | Route |
+|---|---|
+| Customer portal | `/portal` → `GET /portal/orders`, `GET /portal/orders/:id` |
+| Contractor | `/contractor/` → `GET /contractor/jobs` |
+| Admin | `/admin` → `GET /admin/overview`, `/admin/orders`, `/admin/contractors`, `/admin/email-log` |
+| Auth | `POST /auth/request-code`, `POST /auth/verify-code` |
