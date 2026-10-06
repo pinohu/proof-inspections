@@ -106,7 +106,9 @@ const __workerModule = __bundledApp;
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (request.method === "GET" && !url.pathname.startsWith("/orders") && !url.pathname.startsWith("/proof") && !url.pathname.startsWith("/.well-known") && !url.pathname.startsWith("/webhooks") && !url.pathname.startsWith("/auth") && !url.pathname.startsWith("/portal/orders") && !url.pathname.startsWith("/contractor/jobs") && !url.pathname.startsWith("/admin/") && url.pathname !== "/health") {
+    const p = url.pathname;
+    const isAdminApi = p === "/admin/overview" || p.startsWith("/admin/orders") || p.startsWith("/admin/contractors") || p.startsWith("/admin/email-log");
+    if (request.method === "GET" && !isAdminApi && !p.startsWith("/orders") && !p.startsWith("/proof") && !p.startsWith("/.well-known") && !p.startsWith("/webhooks") && !p.startsWith("/auth") && !p.startsWith("/portal/orders") && !p.startsWith("/contractor/jobs") && p !== "/health") {
       const asset = serveAsset(url.pathname);
       if (asset) return asset;
     }

@@ -1080,13 +1080,16 @@ export default {
         return env.ASSETS.fetch(new Request(new URL('/portal.html', url), request));
       }
       if (path === '/admin' || path.startsWith('/admin/')) {
-        return env.ASSETS.fetch(new Request(new URL('/admin.html', url), request));
+        return errJson(404, 'not_found', 'admin page not found');
       }
-      const assetRes = await env.ASSETS.fetch(request);
-      if (assetRes.status === 404 && path.startsWith('/api/')) {
-        return errJson(404, 'not_found', 'no such endpoint');
+      if (env.ASSETS) {
+        const assetRes = await env.ASSETS.fetch(request);
+        if (assetRes.status === 404 && path.startsWith('/api/')) {
+          return errJson(404, 'not_found', 'no such endpoint');
+        }
+        return assetRes;
       }
-      return assetRes;
+      return errJson(404, 'not_found', 'no such endpoint');
     } catch (e) {
       return errJson(e.statusCode || 500, e.code || 'internal_error', e.message || 'internal error');
     }
