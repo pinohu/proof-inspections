@@ -32,3 +32,12 @@ zone_id = "2167ca2ac8152e83f65791680d8b9b71"
 # Secrets (set via `wrangler secret put`, NEVER commit):
 #   PROOF_INSPECTIONS_PRIVATE_KEY_PEM  — PKCS#8 PEM Ed25519 private key.
 #   Generate one with: node workers/tools/gen-key.mjs
+#   STRIPE_SECRET_KEY                  — sk_live_... from the Stripe dashboard
+#                                        (use sk_test_... while testing).
+#   STRIPE_WEBHOOK_SECRET              — whsec_... from the webhook endpoint
+#                                        configured in the Stripe dashboard
+#                                        (see STRIPE-GO-LIVE.md).
+#
+# Optional env (set via `wrangler deploy` --var or dashboard):
+#   INSPECTION_PRICE_CENTS             — default 19900 ($199.00)
+#   INSPECTION_CURRENCY                — default 'usd'

@@ -10,6 +10,8 @@
  *   POST /orders/:id/complete
  *   GET  /proof/:id             (public signed bundle, shareable)
  *   GET  /proof/:id/photo/:filename
+ *   POST /orders/:id/payment-intent  (Stripe PaymentIntent -> clientSecret)
+ *   POST /webhooks/stripe            (Stripe event webhook, signature-verified)
  *
  * Static frontend (web/ + contractor/) is served from the [assets] binding:
  *   /              -> web/index.html
@@ -27,6 +29,8 @@ import {
   createProofBundle,
 } from './attestation.js';
 import { parseMultipart, boundaryFromContentType } from './multipart.js';
+import { createPaymentIntent, handleStripeWebhook } from './stripe.js';
+import { d1PaymentStore } from './stripe-store-d1.js';
 
 const VERSION = '0.1.0';
 // Workers request-body ceiling: keep well under platform limits.
@@ -225,7 +229,8 @@ async function handleGetOrder(_request, env, orderId) {
   const proof = proofRow
     ? { id: proofRow.id, bundleHash: proofRow.bundle_hash, proofUrl: `/proof/${proofRow.id}`, createdAt: proofRow.created_at }
     : null;
-  return Response.json({ order: orderToJson(row), evidence, proof });
+  const payment = paymentToJson(await d1PaymentStore(env.DB).getOrderPayment(row.id));
+  return Response.json({ order: orderToJson(row), evidence, proof, payment });
 }
 
 async function handleSubmitEvidence(request, env, orderId) {
@@ -464,6 +469,42 @@ async function handleGetProofPhoto(_request, env, proofId, filename) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Stripe payments                                                  */
+/* ------------------------------------------------------------------ */
+
+/** POST /orders/:id/payment-intent -> { intentId, clientSecret, ... } */
+async function handleCreatePaymentIntent(_request, env, orderId) {
+  const row = await getOrder(env.DB, orderId);
+  if (!row) return errJson(404, 'order_not_found', 'no such order');
+  const store = d1PaymentStore(env.DB);
+  try {
+    const result = await createPaymentIntent(env, store, {
+      id: row.id,
+      customerEmail: row.customer_email,
+    });
+    return Response.json(result, { status: 200 });
+  } catch (e) {
+    return errJson(e.statusCode || 500, e.code || 'stripe_error', e.message);
+  }
+}
+
+/** POST /webhooks/stripe — Stripe event webhook (raw body, verified). */
+async function handleWebhook(request, env) {
+  const store = d1PaymentStore(env.DB);
+  return handleStripeWebhook(env, request, store);
+}
+
+function paymentToJson(payment) {
+  if (!payment) return { status: 'unpaid' };
+  return {
+    status: payment.status,
+    amountCents: payment.amountCents,
+    currency: payment.currency,
+    paidAt: payment.paidAt,
+  };
+}
+
+/* ------------------------------------------------------------------ */
 /* router                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -506,6 +547,16 @@ export default {
       if (m) {
         if (method === 'POST') return handleCompleteOrder(request, env, decodeURIComponent(m[1]));
         return errJson(405, 'method_not_allowed', 'method not allowed');
+      }
+
+      m = path.match(/^\/orders\/([^/]+)\/payment-intent$/);
+      if (m) {
+        if (method === 'POST') return handleCreatePaymentIntent(request, env, decodeURIComponent(m[1]));
+        return errJson(405, 'method_not_allowed', 'method not allowed');
+      }
+
+      if (method === 'POST' && path === '/webhooks/stripe') {
+        return handleWebhook(request, env);
       }
 
       m = path.match(/^\/proof\/([^/]+)\/photo\/(.+)$/);

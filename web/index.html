@@ -202,7 +202,7 @@
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Live order tracking from dispatch to delivery</li>
           </ul>
           <a class="btn btn-primary btn-lg btn-block" href="#order">Order now — $199</a>
-          <p class="price-note">Payment is collected after you place your order. Inspections are scheduled within 2 business days in our current service area.</p>
+          <p class="price-note">Payment is collected securely at checkout. Inspections are scheduled within 2 business days in our current service area.</p>
         </div>
       </div>
     </div>
@@ -262,6 +262,17 @@
                 Place order — $199
               </button>
             </form>
+          </div>
+          <div id="order-pay" class="pay-step" hidden>
+            <h3>Payment</h3>
+            <p class="form-sub">Your inspection is reserved. Complete payment to dispatch your inspector.</p>
+            <div class="form-alert" id="pay-alert" role="alert"></div>
+            <div id="payment-element"><!-- Stripe Payment Element mounts here --></div>
+            <div class="pay-actions">
+              <button type="button" class="btn btn-secondary" id="pay-back">Back</button>
+              <button type="button" class="btn btn-primary btn-lg" id="pay-submit">Pay $199</button>
+            </div>
+            <p class="pay-secure">Secured by Stripe. Your card details never touch our servers.</p>
           </div>
           <div id="order-confirm" class="confirm" hidden>
             <div class="confirm-icon">
@@ -361,6 +372,12 @@
   </div>
 </footer>
 
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  /* Stripe publishable key. Replace with your pk_live_... key for production.
+   * While testing, use a pk_test_... key from the Stripe dashboard. */
+  window.PROOF_STRIPE_KEY = "pk_test_REPLACE_ME";
+</script>
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/order.js"></script>
 </body>

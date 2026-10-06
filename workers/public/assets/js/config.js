@@ -12,17 +12,22 @@
  *
  *     <script>window.PROOF_API_BASE = "https://api.example.com";</script>
  *
- * API contract (implemented by the backend, built in parallel):
+ * Stripe publishable key (REQUIRED for live payments). Set before
+ * loading order.js:
+ *
+ *     <script>window.PROOF_STRIPE_KEY = "pk_live_...";</script>
+ *
+ * Use a pk_test_... key while testing. If unset, the order form shows
+ * an error directing the owner to configure it.
+ *
+ * API contract (implemented by the backend):
  *   POST /orders
  *     body: { propertyAddress, inspectionType, customerName, customerEmail, customerPhone, notes? }
- *     -> 201 { id, status }
+ *     -> 201 { order: { id, status, ... } }
+ *   POST /orders/:id/payment-intent
+ *     -> 200 { intentId, clientSecret, amountCents, currency }
  *   GET /orders/:id
- *     -> 200 {
- *            id, status, propertyAddress, inspectionType,
- *            customerName, customerEmail, createdAt,
- *            proofBundleUrl?, reportUrl?, digest?,
- *            timeline?: [{ stage, at }]
- *          }
+ *     -> 200 { order, evidence, proof, payment: { status, ... } }
  *
  * Status values are normalized client-side (see track.js STAGES), so the
  * backend may use any reasonable naming; the listed labels are preferred:
@@ -35,5 +40,6 @@
     url: function (path) {
       return base + (path.charAt(0) === "/" ? path : "/" + path);
     },
+    stripeKey: window.PROOF_STRIPE_KEY || "",
   };
 })();
