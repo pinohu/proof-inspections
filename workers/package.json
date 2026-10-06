@@ -1,0 +1,1 @@
+{"description":"Cloudflare Workers deployment of proof-inspections (D1 + R2 + Web Crypto).","devDependencies":{"wrangler":"^3.0.0"},"name":"proof-inspections-workers","private":true,"scripts":{"deploy":"wrangler deploy","dev":"wrangler dev"},"type":"module","version":"0.1.0"}

@@ -1,0 +1,34 @@
+# proof-inspections on Cloudflare Workers
+# Deployed to https://inspections.lodgingconnections.com
+
+name = "proof-inspections"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+account_id = "e44866724f9412887af0d84c924e32c0"
+
+# D1 — inspection metadata (orders, evidence, proofs).
+# Create first:  wrangler d1 create proof-inspections
+# Then paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "proof-inspections"
+database_id = "REPLACE_WITH_WRANGLER_D1_CREATE_OUTPUT"
+
+# R2 — photo bytes. Create first: wrangler r2 bucket create proof-inspections-photos
+[[r2_buckets]]
+binding = "PHOTOS"
+bucket_name = "proof-inspections-photos"
+
+# Static frontend: web/ landing + tracking, contractor/ PWA.
+[assets]
+directory = "./public"
+
+# Custom domain. The zone must have an existing DNS record or use this route;
+# wrangler will attach the worker to the hostname on deploy.
+[[routes]]
+pattern = "inspections.lodgingconnections.com/*"
+zone_id = "2167ca2ac8152e83f65791680d8b9b71"
+
+# Secrets (set via `wrangler secret put`, NEVER commit):
+#   PROOF_INSPECTIONS_PRIVATE_KEY_PEM  — PKCS#8 PEM Ed25519 private key.
+#   Generate one with: node workers/tools/gen-key.mjs
