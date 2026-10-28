@@ -1,0 +1,40 @@
+name: Agent task
+description: A unit of work for an AI agent (or a human). One issue = one branch = one PR.
+title: "[task] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Agents: read `AGENTS.md` ("Multi-agent workflow") first. Claim this issue with your `agent:*` label plus `in-progress` before starting.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Files, areas or features this touches. Note anything out of scope.
+  - type: textarea
+    id: verify
+    attributes:
+      label: How to verify
+      description: Commands or checks that prove it works.
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Assigned agent
+      options:
+        - Any
+        - Claude
+        - Codex
+        - Cursor
+        - Copilot
+        - Lovable
+        - Meta
+        - Human
+    validations:
+      required: true
